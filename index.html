@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Licitaciones Asbesto — Biobío</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f1923;--surface:#18293a;--surface2:#1e3347;--border:#2a4459;
+    --accent:#f5c518;--accent-dim:#c49c10;--text:#e8edf2;--text-muted:#7a9ab5;
+    --text-faint:#4a6a85;--danger:#e05c5c;--success:#4caf8a;--mp:#2a7fd4;
+    --alta:#f5a623;--radius:6px;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit;margin:0;padding:0;}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:15px;line-height:1.5;}
+
+  header{background:var(--surface);border-bottom:2px solid var(--accent);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:10;}
+  .header-icon{width:36px;height:36px;background:var(--accent);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .header-text h1{font-size:1rem;font-weight:600;}
+  .header-text p{font-size:0.72rem;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
+
+  main{max-width:860px;margin:0 auto;padding:20px 16px 60px;}
+
+  .search-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;}
+  .search-panel p{font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6;}
+
+  .btn-buscar{width:100%;background:var(--accent);color:#0f1923;border:none;border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:1rem;padding:14px;cursor:pointer;transition:background 0.15s;letter-spacing:0.03em;}
+  .btn-buscar:hover{background:var(--accent-dim);}
+  .btn-buscar:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .regiones{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .region-chip{font-size:0.72rem;padding:3px 10px;border-radius:20px;background:rgba(42,127,212,0.12);color:var(--mp);border:1px solid rgba(42,127,212,0.3);font-family:'IBM Plex Mono',monospace;}
+
+  .status-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:0.8rem;color:var(--text-muted);min-height:26px;}
+  .spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .filtros{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+  .filtro-btn{font-size:0.78rem;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.15s;font-family:'IBM Plex Sans',sans-serif;}
+  .filtro-btn.activo-todas{border-color:var(--accent);color:var(--accent);background:rgba(245,197,24,0.08);}
+  .filtro-btn.activo-alta{border-color:var(--alta);color:var(--alta);background:rgba(245,166,35,0.08);}
+  .filtro-btn.activo-rel{border-color:var(--mp);color:var(--mp);background:rgba(42,127,212,0.08);}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;border-left:3px solid var(--mp);transition:border-color 0.15s;}
+  .card:hover{border-color:var(--accent);}
+  .card.alta{border-left-color:var(--alta);}
+  .badge{font-size:0.65rem;font-family:'IBM Plex Mono',monospace;padding:3px 8px;border-radius:3px;white-space:nowrap;display:inline-block;margin-bottom:8px;}
+  .badge-alta{background:rgba(245,166,35,0.15);color:var(--alta);border:1px solid rgba(245,166,35,0.3);}
+  .badge-rel{background:rgba(42,127,212,0.15);color:var(--mp);border:1px solid rgba(42,127,212,0.3);}
+  .card-title{font-size:0.92rem;font-weight:500;line-height:1.4;color:var(--text);margin-bottom:10px;}
+  .card-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  .meta-item{font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
+  .meta-item strong{color:var(--text);}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .card-link{font-size:0.8rem;color:var(--accent);text-decoration:none;font-family:'IBM Plex Mono',monospace;padding:5px 12px;border:1px solid var(--accent-dim);border-radius:var(--radius);transition:background 0.15s;}
+  .card-link:hover{background:rgba(245,197,24,0.1);}
+  .status-chip{font-size:0.7rem;padding:3px 9px;border-radius:20px;font-family:'IBM Plex Mono',monospace;}
+  .chip-open{background:rgba(76,175,138,0.15);color:var(--success);border:1px solid rgba(76,175,138,0.3);}
+  .chip-closing{background:rgba(224,92,92,0.15);color:var(--danger);border:1px solid rgba(224,92,92,0.3);}
+
+  .empty-state{text-align:center;padding:40px 20px;color:var(--text-faint);font-size:0.88rem;}
+  .empty-icon{font-size:2.5rem;margin-bottom:10px;}
+  .error-msg{background:rgba(224,92,92,0.08);border:1px solid rgba(224,92,92,0.3);border-radius:var(--radius);padding:14px 16px;font-size:0.83rem;color:var(--danger);margin-bottom:10px;}
+  .disclaimer{margin-top:28px;padding:12px 16px;background:var(--surface);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;font-size:0.75rem;color:var(--text-muted);}
+
+
+  .tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--border);}
+  .tab-btn{flex:1;font-family:'IBM Plex Sans',sans-serif;font-size:0.88rem;font-weight:500;padding:11px 8px;background:transparent;color:var(--text-muted);border:none;border-bottom:3px solid transparent;cursor:pointer;transition:color 0.15s,border-color 0.15s;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.activo{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab-btn:focus-visible,.portal-link:focus-visible,.btn-buscar:focus-visible,.filtro-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .panel[hidden]{display:none;}
+  .priv-intro{font-size:0.82rem;color:var(--text-muted);margin-bottom:18px;line-height:1.6;}
+  .grupo-titulo{font-size:0.95rem;font-weight:600;margin:6px 0 4px;}
+  .grupo-desc{font-size:0.78rem;color:var(--text-muted);margin-bottom:12px;}
+  .portal{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--success);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
+  .portal.inscripcion{border-left-color:var(--alta);}
+  .portal-nombre{font-size:0.95rem;font-weight:600;margin-bottom:4px;}
+  .portal-que{font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;}
+  .portal-como{font-size:0.8rem;color:var(--text);margin-bottom:10px;}
+  .portal-como strong{color:var(--accent);font-weight:600;}
+  .portal-link{display:inline-block;font-size:0.8rem;color:var(--accent);text-decoration:none;font-family:'IBM Plex Mono',monospace;padding:5px 12px;border:1px solid var(--accent-dim);border-radius:var(--radius);}
+  .portal-link:hover{background:rgba(245,197,24,0.1);}
+  .grupo{margin-bottom:22px;}
+
+  @media(max-width:500px){
+    header{padding:12px 14px 10px;}
+    main{padding:14px 12px 60px;}
+    .search-panel{padding:14px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-icon">⚠️</div>
+  <div class="header-text">
+    <h1>Licitaciones — Retiro de Asbesto</h1>
+    <p>Biobío · Ñuble · La Araucanía · Soluciones Digitales</p>
+  </div>
+</header>
+
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab-btn activo" id="tabPublico" role="tab" onclick="cambiarTab('publico')">Sector público</button>
+    <button class="tab-btn" id="tabPrivado" role="tab" onclick="cambiarTab('privado')">Sector privado</button>
+  </div>
+
+  <section class="panel" id="panelPublico">
+  <div class="search-panel">
+    <p>Busca automáticamente en todas las licitaciones activas de Mercado Público usando los términos del rubro: asbesto, amianto, cubierta, techumbre, fibrocemento y más. Filtra solo las regiones de interés.</p>
+    <button class="btn-buscar" id="btnBuscar" onclick="buscar()">🔍 BUSCAR OPORTUNIDADES</button>
+    <div class="regiones">
+      <span class="region-chip">Biobío</span>
+      <span class="region-chip">Ñuble</span>
+      <span class="region-chip">La Araucanía</span>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+  <div class="filtros" id="filtros" style="display:none">
+    <button class="filtro-btn activo-todas" onclick="filtrar('TODAS')">Todas</button>
+    <button class="filtro-btn" onclick="filtrar('ALTA PRIORIDAD')">⭐ Asbesto / MCA</button>
+    <button class="filtro-btn" onclick="filtrar('RELACIONADA')">Relacionadas</button>
+  </div>
+  <div id="resultsArea"></div>
+
+  <div class="disclaimer">
+    <strong>Fuente:</strong> API oficial de Mercado Público — licitaciones activas. Verifica siempre los detalles antes de postular.
+  </div>
+  </section>
+
+  <section class="panel" id="panelPrivado" hidden>
+    <p class="priv-intro">Las empresas privadas casi nunca publican sus licitaciones en la web abierta. Piden cotizaciones a proveedores inscritos en estos portales. Inscríbete una vez y revisa cada portal con regularidad.</p>
+
+    <div class="grupo">
+      <div class="grupo-titulo">Con licitaciones visibles</div>
+      <div class="grupo-desc">Puedes revisar procesos publicados desde el portal.</div>
+
+      <div class="portal">
+        <div class="portal-nombre">ENAP</div>
+        <div class="portal-que">Empresa Nacional del Petróleo. Portal propio de licitaciones activas y registro de proveedores.</div>
+        <div class="portal-como"><strong>Cómo:</strong> entra a Gestión de Proveedores y abre el portal de licitaciones.</div>
+        <a class="portal-link" href="https://www.enap.cl/gestion-proveedores-enap" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal">
+        <div class="portal-nombre">Essbio</div>
+        <div class="portal-que">Sanitaria del Biobío. Página de licitaciones para proveedores.</div>
+        <div class="portal-como"><strong>Cómo:</strong> revisa la lista de licitaciones vigentes y sus bases.</div>
+        <a class="portal-link" href="https://www.essbio.cl/proveedores/licitaciones" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal">
+        <div class="portal-nombre">RyCE</div>
+        <div class="portal-que">Plataforma donde empresas contratistas publican licitaciones vigentes y cerradas.</div>
+        <div class="portal-como"><strong>Cómo:</strong> usa "Ver licitaciones vigentes". Para postular debes registrarte.</div>
+        <a class="portal-link" href="https://www.ryce.cl/home/licitaciones.aspx" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal">
+        <div class="portal-nombre">Wherex</div>
+        <div class="portal-que">Plataforma B2B (entre empresas) donde compañías chilenas licitan y piden cotizaciones.</div>
+        <div class="portal-como"><strong>Cómo:</strong> regístrate como proveedor y recibe invitaciones a procesos de tu rubro.</div>
+        <a class="portal-link" href="https://wherex.com" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-titulo">Requieren inscripción o invitación</div>
+      <div class="grupo-desc">Te inscribes una vez y la empresa te invita a cotizar.</div>
+
+      <div class="portal inscripcion">
+        <div class="portal-nombre">SICEP</div>
+        <div class="portal-que">Registro de proveedores usado por la minería y la industria.</div>
+        <div class="portal-como"><strong>Cómo:</strong> inscribe tu empresa y tu rubro para que las empresas te encuentren.</div>
+        <a class="portal-link" href="https://sicep.cl" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal inscripcion">
+        <div class="portal-nombre">SAP Ariba</div>
+        <div class="portal-que">Plataforma que usan empresas grandes (por ejemplo Copec) para licitar.</div>
+        <div class="portal-como"><strong>Cómo:</strong> cuenta gratuita de proveedor. Normalmente llega una invitación del cliente por correo.</div>
+        <a class="portal-link" href="https://supplier.ariba.com" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal inscripcion">
+        <div class="portal-nombre">CMPC</div>
+        <div class="portal-que">Forestal y celulosa. El registro de proveedores se hace por Ariba SLP.</div>
+        <div class="portal-como"><strong>Cómo:</strong> sigue el enlace "Convertirse en proveedor" y completa el registro.</div>
+        <a class="portal-link" href="https://proveedores.cmpc.com/Convertirse-Proveedor" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+
+      <div class="portal inscripcion">
+        <div class="portal-nombre">iConstruye</div>
+        <div class="portal-que">Plataforma del rubro construcción. Sirve para constructoras que subcontratan retiros.</div>
+        <div class="portal-como"><strong>Cómo:</strong> regístrate como proveedor y ofrece tus servicios de retiro y techumbres.</div>
+        <a class="portal-link" href="https://www.iconstruye.com" target="_blank" rel="noopener">Abrir portal</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const PROXY = 'https://script.google.com/macros/s/AKfycbyM7O598Zn0WjBGXFzOBukgQqaSzUcUZTJgBju-cNxuTkcQbLAFU5yldC2f1S4uPMOZ/exec';
+  let todosResultados = [];
+  let filtroActual = 'TODAS';
+
+  function cambiarTab(t) {
+    const pub = t === 'publico';
+    document.getElementById('panelPublico').hidden = !pub;
+    document.getElementById('panelPrivado').hidden = pub;
+    document.getElementById('tabPublico').classList.toggle('activo', pub);
+    document.getElementById('tabPrivado').classList.toggle('activo', !pub);
+  }
+
+  function setStatus(msg, loading=false) {
+    document.getElementById('statusBar').innerHTML = loading
+      ? `<div class="spinner"></div><span>${msg}</span>`
+      : `<span>${msg}</span>`;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-CL', {day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+
+  function daysBetween(dateStr) {
+    if (!dateStr) return null;
+    const cierre = new Date(dateStr); cierre.setHours(0,0,0,0);
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    return Math.round((cierre - hoy) / (1000*60*60*24));
+  }
+
+  function filtrar(f) {
+    filtroActual = f;
+    document.querySelectorAll('.filtro-btn').forEach(b => {
+      b.className = 'filtro-btn';
+    });
+    if (f==='TODAS') document.querySelectorAll('.filtro-btn')[0].classList.add('activo-todas');
+    if (f==='ALTA PRIORIDAD') document.querySelectorAll('.filtro-btn')[1].classList.add('activo-alta');
+    if (f==='RELACIONADA') document.querySelectorAll('.filtro-btn')[2].classList.add('activo-rel');
+    renderResultados(f==='TODAS' ? todosResultados : todosResultados.filter(r=>r.clasificacion===f));
+  }
+
+  function renderResultados(lista) {
+    const area = document.getElementById('resultsArea');
+    if (!lista.length) {
+      area.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>No hay resultados para este filtro.</div>`;
+      return;
+    }
+    area.innerHTML = lista.map(r => {
+      const days = daysBetween(r.fechaCierre);
+      const isUrgent = days !== null && days <= 5;
+      const chipClass = isUrgent ? 'chip-closing' : 'chip-open';
+      const chipLabel = days === null ? 'Activa' : days === 0 ? 'Cierra hoy' : days === 1 ? 'Cierra mañana' : `Cierra en ${days} días`;
+      const badgeClass = r.clasificacion === 'ALTA PRIORIDAD' ? 'badge-alta' : 'badge-rel';
+      const cardClass = r.clasificacion === 'ALTA PRIORIDAD' ? 'card alta' : 'card';
+      const link = `https://www.mercadopublico.cl/fichaLicitacion.html?idLicitacion=${r.codigo}`;
+      return `
+      <div class="${cardClass}">
+        <span class="badge ${badgeClass}">${r.clasificacion}</span>
+        <div class="card-title">${r.nombre}</div>
+        <div class="card-meta">
+          <span class="meta-item">🏛 <strong>${r.organismo || '—'}</strong></span>
+          <span class="meta-item">📍 ${r.comuna || '—'}, ${r.region || '—'}</span>
+          <span class="meta-item">📅 Cierre: <strong>${formatDate(r.fechaCierre)}</strong></span>
+          ${r.monto ? `<span class="meta-item">💰 ${Number(r.monto).toLocaleString('es-CL')} ${r.moneda}</span>` : ''}
+        </div>
+        <div class="card-footer">
+          <span class="status-chip ${chipClass}">${chipLabel}</span>
+          <a href="${link}" target="_blank" rel="noopener" class="card-link">Ver licitación →</a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function buscar() {
+    const btn = document.getElementById('btnBuscar');
+    btn.disabled = true;
+    document.getElementById('resultsArea').innerHTML = '';
+    document.getElementById('filtros').style.display = 'none';
+    todosResultados = [];
+    setStatus('Buscando en Mercado Público... esto puede tardar hasta 2 minutos.', true);
+
+    const cbName = 'cb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      setStatus('Tiempo agotado. Intenta de nuevo.');
+      btn.disabled = false;
+      delete window[cbName];
+    }, 120000);
+
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      document.body.removeChild(script);
+      btn.disabled = false;
+
+      if (data.error) {
+        document.getElementById('resultsArea').innerHTML = `<div class="error-msg"><strong>Error:</strong> ${data.error}</div>`;
+        setStatus('Error');
+        return;
+      }
+
+      todosResultados = data.resultados || [];
+      const count = todosResultados.length;
+      document.getElementById('filtros').style.display = count ? 'flex' : 'none';
+      filtroActual = 'TODAS';
+      document.querySelectorAll('.filtro-btn')[0].className = 'filtro-btn activo-todas';
+      document.querySelectorAll('.filtro-btn')[1].className = 'filtro-btn';
+      document.querySelectorAll('.filtro-btn')[2].className = 'filtro-btn';
+      renderResultados(todosResultados);
+      const now = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+      setStatus(`${count} oportunidad${count!==1?'es':''} encontrada${count!==1?'s':''} · ${now}`);
+    };
+
+    script.src = `${PROXY}?callback=${cbName}`;
+    document.body.appendChild(script);
+  }
+</script>
+</body>
+</html>
