@@ -1,6 +1,6 @@
 {
-  "name": "Licitaciones — Retiro de Asbesto",
-  "short_name": "Licitaciones",
+  "name": "Tek Biobío — Licitaciones de Asbesto",
+  "short_name": "Tek Biobío",
   "description": "Busca licitaciones de retiro de asbesto en Biobío, Ñuble y La Araucanía.",
   "start_url": "./index.html",
   "scope": "./",

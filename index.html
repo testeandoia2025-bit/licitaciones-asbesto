@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Licitaciones Asbesto — Biobío</title>
+<title>Tek Biobío — Licitaciones Asbesto</title>
 <meta name="theme-color" content="#0f1923">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Licitaciones">
+<meta name="apple-mobile-web-app-title" content="Tek Biobío">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -28,7 +28,9 @@
   html,body{height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:15px;line-height:1.5;}
 
   header{background:var(--surface);border-bottom:2px solid var(--accent);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:10;}
-  .header-icon{width:36px;height:36px;background:var(--accent);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .header-icon{width:44px;height:44px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:4px;flex-shrink:0;}
+  .header-icon img{width:100%;height:100%;object-fit:contain;display:block;}
+  .brand{font-size:0.7rem;font-weight:700;letter-spacing:0.14em;color:var(--accent);line-height:1.1;margin-bottom:2px;}
   .header-text h1{font-size:1rem;font-weight:600;}
   .header-text p{font-size:0.72rem;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
 
@@ -105,10 +107,11 @@
 </head>
 <body>
 <header>
-  <div class="header-icon">⚠️</div>
+  <div class="header-icon"><img src="logo-escudo.png" alt="Tek Biobío"></div>
   <div class="header-text">
+    <div class="brand">TEK BIOBÍO</div>
     <h1>Licitaciones — Retiro de Asbesto</h1>
-    <p>Biobío · Ñuble · La Araucanía · Soluciones Digitales</p>
+    <p>Biobío · Ñuble · La Araucanía</p>
   </div>
 </header>
 
